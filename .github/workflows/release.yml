@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install build twine
+    
+    - name: Run tests
+      run: |
+        python -c "import app; print('App imports successfully')"
+        python -c "from music_analyzer import MusicAnalyzer; print('MusicAnalyzer works')"
+        python -c "from mbti_predictor import MBTIPredictor; print('MBTIPredictor works')"
+    
+    - name: Build package
+      run: |
+        python -m build
+    
+    - name: Create release archive
+      run: |
+        mkdir release-package
+        cp -r *.py templates requirements.txt start.bat README.md LICENSE CHANGELOG.md .env release-package/
+        cd release-package && zip -r ../music-personality-analyzer-${{ github.ref_name }}.zip .
+    
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: 音乐性格分析器 ${{ github.ref_name }}
+        body: |
+          ## 🎵 音乐性格分析器 ${{ github.ref_name }}
+          
+          ### 📦 下载方式
+          - **源码包**: music-personality-analyzer-${{ github.ref_name }}.zip
+          - **Python包**: 通过 `pip install music-personality-analyzer` 安装
+          
+          ### 🚀 快速开始
+          1. 下载源码包并解压
+          2. 双击 `start.bat` (Windows) 或运行 `python app.py`
+          3. 浏览器访问 http://localhost:5000
+          
+          ### ✨ 主要功能
+          - 支持多平台歌单导入（网易云、QQ音乐、酷狗）
+          - 智能音乐风格和情绪分析
+          - MBTI性格类型预测
+          - 美观的Web用户界面
+          
+          查看 [CHANGELOG.md](CHANGELOG.md) 了解详细更新内容。
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./music-personality-analyzer-${{ github.ref_name }}.zip
+        asset_name: music-personality-analyzer-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
+    
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        twine upload dist/* --skip-existing

@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include requirements.txt
+include start.bat
+include .env
+recursive-include templates *.html
+recursive-include static *
+global-exclude __pycache__
+global-exclude *.py[co]
