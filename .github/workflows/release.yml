@@ -50,13 +50,10 @@ jobs:
         cd release-package && Compress-Archive -Path * -DestinationPath ../music-personality-analyzer-${{ github.ref_name }}.zip
     
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: 音乐性格分析器 ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        name: 音乐性格分析器 ${{ github.ref_name }}
         body: |
           ## 🎵 音乐性格分析器 ${{ github.ref_name }}
           
@@ -83,28 +80,13 @@ jobs:
           - 美观的Web用户界面
           
           查看 [CHANGELOG.md](CHANGELOG.md) 了解详细更新内容。
+        files: |
+          ./music-personality-analyzer-${{ github.ref_name }}.zip
+          ./dist/MusicPersonalityAnalyzer.exe
         draft: false
         prerelease: false
-    
-    - name: Upload Release Asset (Source)
-      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./music-personality-analyzer-${{ github.ref_name }}.zip
-        asset_name: music-personality-analyzer-${{ github.ref_name }}.zip
-        asset_content_type: application/zip
-    
-    - name: Upload Release Asset (EXE)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/MusicPersonalityAnalyzer.exe
-        asset_name: MusicPersonalityAnalyzer.exe
-        asset_content_type: application/vnd.microsoft.portable-executable
     
     - name: Publish to PyPI
       env:
