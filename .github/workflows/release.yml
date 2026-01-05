@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install build twine
+        pip install build twine pyinstaller
     
     - name: Run tests
       run: |
@@ -33,13 +33,18 @@ jobs:
       run: |
         python -m build
     
+    - name: Build Windows executable
+      run: |
+        python build_exe.py
+    
     - name: Create release archive
       run: |
         mkdir release-package
         cp -r *.py templates requirements.txt start.bat README.md LICENSE CHANGELOG.md .env release-package/
-        cd release-package && zip -r ../music-personality-analyzer-${{ github.ref_name }}.zip .
+        cd release-package && Compress-Archive -Path * -DestinationPath ../music-personality-analyzer-${{ github.ref_name }}.zip
     
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,10 +55,17 @@ jobs:
           ## 🎵 音乐性格分析器 ${{ github.ref_name }}
           
           ### 📦 下载方式
+          - **Windows可执行文件**: MusicPersonalityAnalyzer.exe (无需安装Python)
           - **源码包**: music-personality-analyzer-${{ github.ref_name }}.zip
           - **Python包**: 通过 `pip install music-personality-analyzer` 安装
           
           ### 🚀 快速开始
+          **方式一：使用exe文件**
+          1. 下载 MusicPersonalityAnalyzer.exe
+          2. 双击运行
+          3. 浏览器访问 http://localhost:5000
+          
+          **方式二：使用源码**
           1. 下载源码包并解压
           2. 双击 `start.bat` (Windows) 或运行 `python app.py`
           3. 浏览器访问 http://localhost:5000
@@ -68,7 +80,7 @@ jobs:
         draft: false
         prerelease: false
     
-    - name: Upload Release Asset
+    - name: Upload Release Asset (Source)
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,6 +89,16 @@ jobs:
         asset_path: ./music-personality-analyzer-${{ github.ref_name }}.zip
         asset_name: music-personality-analyzer-${{ github.ref_name }}.zip
         asset_content_type: application/zip
+    
+    - name: Upload Release Asset (EXE)
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/MusicPersonalityAnalyzer.exe
+        asset_name: MusicPersonalityAnalyzer.exe
+        asset_content_type: application/vnd.microsoft.portable-executable
     
     - name: Publish to PyPI
       env:
