@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   release:
@@ -63,36 +64,33 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
-        name: 音乐性格分析器 ${{ github.ref_name }}
+        name: Music Personality Analyzer ${{ github.ref_name }}
         body: |
-          ## 🎵 音乐性格分析器 ${{ github.ref_name }}
+          ## Music Personality Analyzer ${{ github.ref_name }}
           
-          ### 📦 下载方式
-          - **Windows可执行文件**: MusicPersonalityAnalyzer.exe (无需安装Python)
-          - **源码包**: music-personality-analyzer-${{ github.ref_name }}.zip
-          - **Python包**: 通过 `pip install music-personality-analyzer` 安装
+          ### Download Options:
+          - **Windows Executable**: MusicPersonalityAnalyzer.exe (No Python installation required)
+          - **Source Code**: music-personality-analyzer-${{ github.ref_name }}.zip
           
-          ### 🚀 快速开始
-          **方式一：使用exe文件**
-          1. 下载 MusicPersonalityAnalyzer.exe
-          2. 双击运行
-          3. 浏览器访问 http://localhost:5000
+          ### Quick Start:
+          **Method 1: Using exe file**
+          1. Download MusicPersonalityAnalyzer.exe
+          2. Double click to run
+          3. Visit http://localhost:5000 in your browser
           
-          **方式二：使用源码**
-          1. 下载源码包并解压
-          2. 双击 `start.bat` (Windows) 或运行 `python app.py`
-          3. 浏览器访问 http://localhost:5000
+          **Method 2: Using source code**
+          1. Download and extract the source package
+          2. Double click `start.bat` (Windows) or run `python app.py`
+          3. Visit http://localhost:5000 in your browser
           
-          ### ✨ 主要功能
-          - 支持多平台歌单导入（网易云、QQ音乐、酷狗）
-          - 智能音乐风格和情绪分析
-          - MBTI性格类型预测
-          - 美观的Web用户界面
-          
-          查看 [CHANGELOG.md](CHANGELOG.md) 了解详细更新内容。
+          ### Features:
+          - Multi-platform playlist support (NetEase Cloud Music, QQ Music, Kugou)
+          - Intelligent music style and emotion analysis
+          - MBTI personality type prediction
+          - Beautiful web user interface
         files: |
-          ./music-personality-analyzer-${{ github.ref_name }}.zip
-          ./dist/MusicPersonalityAnalyzer.exe
+          music-personality-analyzer-${{ github.ref_name }}.zip
+          dist/MusicPersonalityAnalyzer.exe
         draft: false
         prerelease: false
       env:
