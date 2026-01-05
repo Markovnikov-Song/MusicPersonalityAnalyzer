@@ -35,7 +35,7 @@ jobs:
     
     - name: Build Windows executable
       run: |
-        pyinstaller --onefile --add-data "templates;templates" --add-data "README.md;." --add-data "requirements.txt;." --add-data ".env;." --hidden-import flask --hidden-import requests --hidden-import pandas --hidden-import sklearn --hidden-import numpy --hidden-import bs4 --hidden-import lxml --hidden-import dotenv --name MusicPersonalityAnalyzer app.py
+        pyinstaller --onefile --console --add-data "templates;templates" --hidden-import flask --hidden-import requests --hidden-import pandas --hidden-import sklearn --hidden-import numpy --hidden-import bs4 --hidden-import lxml --hidden-import dotenv --hidden-import music_analyzer --hidden-import mbti_predictor --hidden-import playlist_importer --hidden-import kugou_api --hidden-import mock_data_generator --collect-all sklearn --collect-all pandas --name MusicPersonalityAnalyzer app.py
     
     - name: Create release archive
       run: |
