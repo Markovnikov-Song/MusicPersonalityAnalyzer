@@ -35,7 +35,7 @@ jobs:
     
     - name: Build Windows executable
       run: |
-        python build_exe.py
+        pyinstaller --onefile --add-data "templates;templates" --add-data "README.md;." --add-data "requirements.txt;." --add-data ".env;." --hidden-import flask --hidden-import requests --hidden-import pandas --hidden-import sklearn --hidden-import numpy --hidden-import bs4 --hidden-import lxml --hidden-import dotenv --name MusicPersonalityAnalyzer app.py
     
     - name: Create release archive
       run: |
