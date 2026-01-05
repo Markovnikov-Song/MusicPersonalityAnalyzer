@@ -55,8 +55,8 @@ jobs:
     - name: Check files exist
       run: |
         echo "Checking files..."
-        ls -la ./music-personality-analyzer-${{ github.ref_name }}.zip
-        ls -la ./dist/MusicPersonalityAnalyzer.exe
+        dir ./music-personality-analyzer-${{ github.ref_name }}.zip
+        dir ./dist/MusicPersonalityAnalyzer.exe
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
