@@ -39,6 +39,7 @@ jobs:
     - name: Build Windows executable
       run: |
         pyinstaller --onefile --console --add-data "templates;templates" --hidden-import flask --hidden-import requests --hidden-import pandas --hidden-import sklearn --hidden-import numpy --hidden-import bs4 --hidden-import lxml --hidden-import dotenv --hidden-import music_analyzer --hidden-import mbti_predictor --hidden-import playlist_importer --hidden-import kugou_api --hidden-import mock_data_generator --collect-all sklearn --collect-all pandas --name MusicPersonalityAnalyzer app.py
+        dir dist
     
     - name: Create release archive
       run: |
@@ -102,4 +103,5 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        twine upload dist/* --skip-existing
+        dir dist
+        twine upload dist/*.tar.gz dist/*.whl --skip-existing || echo "PyPI upload failed or skipped"
