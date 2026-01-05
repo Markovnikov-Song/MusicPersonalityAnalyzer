@@ -40,7 +40,13 @@ jobs:
     - name: Create release archive
       run: |
         mkdir release-package
-        cp -r *.py templates requirements.txt start.bat README.md LICENSE CHANGELOG.md .env release-package/
+        copy *.py release-package\
+        xcopy templates release-package\templates\ /E /I
+        copy requirements.txt release-package\
+        copy start.bat release-package\
+        copy README.md release-package\
+        copy LICENSE release-package\
+        copy CHANGELOG.md release-package\
         cd release-package && Compress-Archive -Path * -DestinationPath ../music-personality-analyzer-${{ github.ref_name }}.zip
     
     - name: Create Release
