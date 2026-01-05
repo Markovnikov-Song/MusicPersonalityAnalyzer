@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: windows-latest
@@ -48,6 +51,12 @@ jobs:
         copy LICENSE release-package\
         copy CHANGELOG.md release-package\
         cd release-package && Compress-Archive -Path * -DestinationPath ../music-personality-analyzer-${{ github.ref_name }}.zip
+    
+    - name: Check files exist
+      run: |
+        echo "Checking files..."
+        ls -la ./music-personality-analyzer-${{ github.ref_name }}.zip
+        ls -la ./dist/MusicPersonalityAnalyzer.exe
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
